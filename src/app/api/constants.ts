@@ -20,4 +20,9 @@ export const SHIPPING_METHOD_SURCHARGE = [
     { id: 2, label: '25%', shipping_method_id: 2, value: 0.25 }
 ]
 
-export const DataApp: any[] = []
+// Usuario por defecto; se puede sobrescribir con variables de entorno
+export const DEFAULT_USER = {
+    username: process.env.DEFAULT_USER ?? 'admin',
+    name: process.env.DEFAULT_USER_NAME ?? 'Administrador',
+    password: process.env.DEFAULT_PASSWORD ?? 'admin123'
+}

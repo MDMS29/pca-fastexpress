@@ -1,10 +1,13 @@
 import { NewResponse } from "@/src/lib/responses";
-import { SHIPPING_METHODS } from "../constants";
+import { getDB } from "@/src/db/models";
+import { ShippingMethod } from "@/src/db/models.interface";
 
 export function GET(){
-return NewResponse({
+  const shippingMethods = getDB().prepare('SELECT id, label FROM shipping_methods').all() as ShippingMethod[]
+
+  return NewResponse({
     code: 200,
     message: 'OBTENIENDO TIPOS DE ENVIOS!',
-    data: SHIPPING_METHODS
+    data: shippingMethods
   })
 }

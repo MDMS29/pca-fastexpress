@@ -1,8 +1,18 @@
 import { getCalculationWeight } from "@/src/lib/get-calculation-weight";
-import { CUSTOMER_DISCOUNT, DataApp, SHIPPING_METHOD_SURCHARGE } from "../constants";
+import { getDB } from "@/src/db/models";
+import { CustomerDiscount, ShippingMethodSurcharge, ShippingQuote, User } from "@/src/db/models.interface";
 import { RequestBodyShippingQuote } from "./interface";
 
-export const createShippingQuote = (body: RequestBodyShippingQuote) => {
+export const getShippingQuotes = () => {
+    return getDB().prepare(`
+        SELECT q.*, u.name AS responsible
+        FROM shipping_quotes q
+        LEFT JOIN users u ON u.id = q.responsible_id
+        ORDER BY q.id DESC
+    `).all() as ShippingQuote[];
+}
+
+export const createShippingQuote = (body: RequestBodyShippingQuote, responsible: User) => {
     const calculationWeight = getCalculationWeight(body.weight);
     if (calculationWeight === null) {
         return {
@@ -12,8 +22,9 @@ export const createShippingQuote = (body: RequestBodyShippingQuote) => {
         }
     }
 
-    const valueDiscountTypeClient = CUSTOMER_DISCOUNT.find((item) => item.client_type_id === body.client_type_id);
-    const valueSurchargeTypeShipping = SHIPPING_METHOD_SURCHARGE.find((item) => item.shipping_method_id === body.shipping_method_id);
+    const db = getDB();
+    const valueDiscountTypeClient = db.prepare('SELECT * FROM customer_discounts WHERE client_type_id = ?').get(body.client_type_id) as CustomerDiscount | undefined;
+    const valueSurchargeTypeShipping = db.prepare('SELECT * FROM shipping_method_surcharges WHERE shipping_method_id = ?').get(body.shipping_method_id) as ShippingMethodSurcharge | undefined;
 
     if (!valueDiscountTypeClient) {
         return {
@@ -44,14 +55,18 @@ export const createShippingQuote = (body: RequestBodyShippingQuote) => {
         calculation_weight: calculationWeight,
         discount: valueDiscountTypeClient.label,
         surcharge: valueSurchargeTypeShipping.label,
-        total
+        total,
+        responsible_id: responsible.id
     }
 
-    DataApp.push(data);
+    const result = db.prepare(`
+        INSERT INTO shipping_quotes (client_name, client_identification, client_type_id, shipping_method_id, weight, calculation_weight, discount, surcharge, total, responsible_id)
+        VALUES (@client_name, @client_identification, @client_type_id, @shipping_method_id, @weight, @calculation_weight, @discount, @surcharge, @total, @responsible_id)
+    `).run(data);
 
     return {
         code: 200,
         message: 'Cotización de envío calculada exitosamente!',
-        data
+        data: { id: Number(result.lastInsertRowid), ...data, responsible: responsible.name }
     }
 }
