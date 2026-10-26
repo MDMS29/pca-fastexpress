@@ -18,7 +18,7 @@ export async function GET() {
             message: 'Obteniendo cotizaciones de envío!',
             data: getShippingQuotes()
         })
-    } catch (error) {
+    } catch {
         return NewResponse({
             code: 500,
             message: 'Error al obtener las cotizaciones de envío!',
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         const body = await request.json()
         const response = createShippingQuote(body, user)
         return NewResponse(response)
-    } catch (error) {
+    } catch {
         return NewResponse({
             code: 500,
             message: 'Error al guardar la cotización de envío!',

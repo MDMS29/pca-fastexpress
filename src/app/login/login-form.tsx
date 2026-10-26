@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
 const inputClass =
-  "w-full rounded-lg border border-zinc-300 bg-transparent px-3 py-2 text-black outline-none focus:border-zinc-500 dark:border-zinc-700 dark:text-zinc-50";
+  "mt-1.5 h-11 w-full rounded-xl border border-[#873B52]/15 bg-[#FFF8EF]/40 px-3 text-sm font-medium text-[#392832] outline-none transition placeholder:text-[#392832]/35 focus:border-[#873B52] focus:ring-4 focus:ring-[#873B52]/10";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -37,20 +37,20 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4">
-      <label className="flex flex-col gap-1 text-sm text-zinc-700 dark:text-zinc-300">
+    <form onSubmit={onSubmit} className="flex flex-col gap-5">
+      <label className="flex flex-col text-sm font-semibold text-[#392832]">
         Usuario
-        <input name="username" autoComplete="username" required className={inputClass} />
+        <input name="username" autoComplete="username" placeholder="Ingresa tu usuario" required className={inputClass} />
       </label>
-      <label className="flex flex-col gap-1 text-sm text-zinc-700 dark:text-zinc-300">
+      <label className="flex flex-col text-sm font-semibold text-[#392832]">
         Contraseña
-        <input name="password" type="password" autoComplete="current-password" required className={inputClass} />
+        <input name="password" type="password" autoComplete="current-password" placeholder="Ingresa tu contraseña" required className={inputClass} />
       </label>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{error}</p>}
       <button
         type="submit"
         disabled={loading}
-        className="h-11 rounded-full bg-foreground font-medium text-background transition-colors hover:bg-[#383838] disabled:opacity-50 dark:hover:bg-[#ccc]"
+        className="mt-1 h-12 rounded-xl bg-[#873B52] text-sm font-bold text-white shadow-lg shadow-[#873B52]/20 transition hover:bg-[#6f3044] disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? "Ingresando..." : "Ingresar"}
       </button>

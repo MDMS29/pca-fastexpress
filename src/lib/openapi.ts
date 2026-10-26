@@ -22,6 +22,9 @@ const exampleQuote = {
     id: 1,
     client_name: 'Ana Pérez',
     client_identification: '0102030405',
+    document_type_id: 1,
+    document_type: 'Cédula de ciudadanía',
+    client_id: 1,
     client_type_id: 2,
     shipping_method_id: 2,
     weight: 5,
@@ -44,7 +47,7 @@ export const openApiSpec = {
             '**Autenticación:** `POST /api/auth/login` guarda una cookie `session` (httpOnly, 8 h). ' +
             'Las rutas protegidas la leen automáticamente; desde el front usar `fetch` en el mismo origen ' +
             '(o `credentials: "include"`).\n\n' +
-            'Usuario por defecto: `admin` / `admin123` (configurable con `DEFAULT_USER`, `DEFAULT_PASSWORD`, `DEFAULT_USER_NAME`).\n\n' +
+            'El usuario inicial se configura únicamente mediante `DEFAULT_USER`, `DEFAULT_PASSWORD` y `DEFAULT_USER_NAME`.\n\n' +
             'Todas las respuestas usan el sobre `{ code, error, message, data }`.'
     },
     tags: [
@@ -74,10 +77,11 @@ export const openApiSpec = {
             },
             ShippingQuoteInput: {
                 type: 'object',
-                required: ['client_name', 'client_identification', 'client_type_id', 'shipping_method_id', 'weight'],
+                required: ['client_name', 'client_identification', 'document_type_id', 'client_type_id', 'shipping_method_id', 'weight'],
                 properties: {
                     client_name: { type: 'string', example: 'Ana Pérez' },
                     client_identification: { type: 'string', example: '0102030405' },
+                    document_type_id: { type: 'integer', description: 'id de GET /api/document-types', example: 1 },
                     client_type_id: { type: 'integer', description: 'id de GET /api/client-types (1 Nuevo 0%, 2 Frecuente 10%, 3 VIP 20%)', example: 2 },
                     shipping_method_id: { type: 'integer', description: 'id de GET /api/shipping-method (1 Estandar 0%, 2 Express +25%)', example: 2 },
                     weight: { type: 'number', description: 'kg; > 0.01 y <= 20', example: 5 }
@@ -89,6 +93,9 @@ export const openApiSpec = {
                     id: { type: 'integer' },
                     client_name: { type: 'string' },
                     client_identification: { type: 'string' },
+                    document_type_id: { type: 'integer', nullable: true },
+                    document_type: { type: 'string', nullable: true },
+                    client_id: { type: 'integer', nullable: true },
                     client_type_id: { type: 'integer' },
                     shipping_method_id: { type: 'integer' },
                     weight: { type: 'number' },
@@ -162,6 +169,18 @@ export const openApiSpec = {
                     200: {
                         description: 'Tipos de cliente',
                         content: { 'application/json': { schema: envelope({ type: 'array', items: { $ref: '#/components/schemas/CatalogItem' } }, [{ id: 1, label: 'Nuevo' }, { id: 2, label: 'Frecuente' }, { id: 3, label: 'VIP' }], 'OBTENIENDO TIPOS DE CLIENTE!') } }
+                    }
+                }
+            }
+        },
+        '/api/document-types': {
+            get: {
+                tags: ['Catálogos'],
+                summary: 'Listar tipos de documento',
+                responses: {
+                    200: {
+                        description: 'Tipos de documento',
+                        content: { 'application/json': { schema: envelope({ type: 'array', items: { $ref: '#/components/schemas/CatalogItem' } }, [{ id: 1, label: 'Cédula de ciudadanía' }, { id: 3, label: 'NIT' }], 'Obteniendo tipos de documento') } }
                     }
                 }
             }

@@ -3,6 +3,11 @@ export interface ClientType {
   label: string;
 }
 
+export interface DocumentType {
+  id?: number;
+  label: string;
+}
+
 export interface ShippingMethod {
   id?: number;
   label: string;
@@ -32,6 +37,9 @@ export interface ShippingQuote {
   id: number;
   client_name: string;
   client_identification: string;
+  document_type_id: number | null;
+  document_type: string | null;
+  client_id: number | null;
   client_type_id: number;
   shipping_method_id: number;
   weight: number;

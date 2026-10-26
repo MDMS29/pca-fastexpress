@@ -21,7 +21,7 @@ export async function POST(request: Request) {
             message: 'Sesión iniciada!',
             data: user
         })
-    } catch (error) {
+    } catch {
         return NewResponse({
             code: 500,
             message: 'Error al iniciar sesión!',

@@ -2,7 +2,7 @@ interface Response {
     code: number,
     error?: boolean,
     message: string,
-    data: any
+    data: unknown
 }
 
 export const NewResponse = (options: Response) => {

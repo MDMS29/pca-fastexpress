@@ -1,77 +1,31 @@
-import { redirect } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 import { getSessionUser } from "@/src/lib/auth";
-import { getDB } from "@/src/db/models";
-import { ClientType, ShippingMethod } from "@/src/db/models.interface";
-import { getShippingQuotes } from "./api/shipping-quote/shipping-quote.service";
-import ShippingQuoteForm from "./shipping-quote-form";
-import LogoutButton from "./logout-button";
+
+const highlights = [
+  { title: "Cotiza en segundos", text: "Calcula tarifas, descuentos y recargos sin salir del flujo de trabajo.", image: "/images/shared%20image.jpg" },
+  { title: "Controla cada envío", text: "Registra operaciones y consulta el historial de tu equipo en un solo lugar.", image: "/images/shared%20image%20(1).jpg" },
+  { title: "Decide con claridad", text: "Visualiza el resumen de cada cotización antes de confirmar el registro.", image: "/images/shared%20image%20(3).jpg" },
+];
 
 export default async function Home() {
   const user = await getSessionUser();
-  if (!user) redirect("/login");
-
-  const db = getDB();
-  const clientTypes = db.prepare("SELECT id, label FROM client_types").all() as ClientType[];
-  const shippingMethods = db.prepare("SELECT id, label FROM shipping_methods").all() as ShippingMethod[];
-  const shippingQuotes = getShippingQuotes();
+  const panelHref = user ? "/dashboard" : "/login";
+  const panelLabel = user ? "Ir al panel" : "Inicia sesión para ingresar";
 
   return (
-    <div className="flex flex-1 justify-center bg-zinc-50 px-4 py-10 font-sans dark:bg-black">
-      <main className="flex w-full max-w-5xl flex-col gap-8">
-        <header className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-black dark:text-zinc-50">FastExpress</h1>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">Sesión: {user.name} ({user.username})</p>
-          </div>
-          <LogoutButton />
-        </header>
-
-        <section className="rounded-2xl bg-white p-6 shadow-sm dark:bg-zinc-900">
-          <h2 className="mb-4 text-lg font-semibold text-black dark:text-zinc-50">Nuevo envío</h2>
-          <ShippingQuoteForm clientTypes={clientTypes} shippingMethods={shippingMethods} />
-        </section>
-
-        <section className="rounded-2xl bg-white p-6 shadow-sm dark:bg-zinc-900">
-          <h2 className="mb-4 text-lg font-semibold text-black dark:text-zinc-50">Envíos registrados</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-zinc-700 dark:text-zinc-300">
-              <thead className="border-b border-zinc-200 text-xs uppercase text-zinc-500 dark:border-zinc-700">
-                <tr>
-                  <th className="py-2 pr-4">#</th>
-                  <th className="py-2 pr-4">Cliente</th>
-                  <th className="py-2 pr-4">Identificación</th>
-                  <th className="py-2 pr-4">Peso (kg)</th>
-                  <th className="py-2 pr-4">Descuento</th>
-                  <th className="py-2 pr-4">Recargo</th>
-                  <th className="py-2 pr-4">Total</th>
-                  <th className="py-2 pr-4">Responsable</th>
-                  <th className="py-2 pr-4">Fecha</th>
-                </tr>
-              </thead>
-              <tbody>
-                {shippingQuotes.length === 0 && (
-                  <tr>
-                    <td colSpan={9} className="py-4 text-center text-zinc-500">Sin envíos registrados</td>
-                  </tr>
-                )}
-                {shippingQuotes.map((quote) => (
-                  <tr key={quote.id} className="border-b border-zinc-100 dark:border-zinc-800">
-                    <td className="py-2 pr-4">{quote.id}</td>
-                    <td className="py-2 pr-4">{quote.client_name}</td>
-                    <td className="py-2 pr-4">{quote.client_identification}</td>
-                    <td className="py-2 pr-4">{quote.weight}</td>
-                    <td className="py-2 pr-4">{quote.discount}</td>
-                    <td className="py-2 pr-4">{quote.surcharge}</td>
-                    <td className="py-2 pr-4">{quote.total.toFixed(2)}</td>
-                    <td className="py-2 pr-4">{quote.responsible ?? "—"}</td>
-                    <td className="py-2 pr-4">{quote.created_at}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </main>
-    </div>
+    <main className="min-h-screen overflow-hidden bg-[#FFF8EF] text-[#392832]">
+      <header className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
+        <Link href="/" className="flex items-center gap-3" aria-label="FastExpress, inicio"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#873B52] font-display text-xl font-bold text-[#FFF8EF] shadow-lg shadow-[#873B52]/20">F</span><span><span className="block font-display text-xl font-bold text-[#873B52]">FastExpress</span><span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#80509A]">En movimiento</span></span></Link>
+        <Link href={panelHref} className="rounded-full border border-[#873B52]/20 bg-white px-4 py-2 text-sm font-bold text-[#873B52] transition hover:border-[#873B52] hover:bg-[#873B52] hover:text-white">{user ? "Ir al panel" : "Iniciar sesión"}</Link>
+      </header>
+      <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 pb-20 pt-8 sm:px-8 lg:grid-cols-[1.02fr_.98fr] lg:px-10 lg:pb-28 lg:pt-16">
+        <div className="max-w-2xl"><p className="mb-5 inline-flex items-center gap-2 rounded-full bg-[#E6B94F]/20 px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] text-[#873B52]"><span className="h-2 w-2 rounded-full bg-[#D66B4D]" />Operaciones sin fricción</p><h1 className="font-display text-5xl font-bold leading-[.98] tracking-tight text-[#873B52] sm:text-6xl lg:text-7xl">Tu logística,<br /><span className="text-[#D66B4D]">en buen camino.</span></h1><p className="mt-7 max-w-xl text-lg leading-8 text-[#392832]/75">Cotiza, registra y consulta tus envíos con una herramienta clara para mantener cada operación en movimiento.</p><div className="mt-8 flex flex-wrap gap-3"><Link href={panelHref} className="rounded-full bg-[#873B52] px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-[#873B52]/20 transition hover:-translate-y-0.5 hover:bg-[#6f3044]">{panelLabel}</Link><a href="#como-funciona" className="rounded-full border border-[#398A8C]/30 px-6 py-3.5 text-sm font-bold text-[#398A8C] transition hover:bg-[#398A8C]/10">Conoce el proceso</a></div><div className="mt-10 flex items-center gap-6 text-sm"><div><p className="font-display text-2xl font-bold text-[#80509A]">1 lugar</p><p className="text-[#392832]/60">para operar</p></div><span className="h-9 w-px bg-[#873B52]/15" /><div><p className="font-display text-2xl font-bold text-[#80509A]">100%</p><p className="text-[#392832]/60">trazable</p></div></div></div>
+        <div className="relative mx-auto w-full max-w-xl lg:max-w-none"><div className="absolute -inset-5 rounded-[3rem] bg-[#E6B94F]/25 blur-2xl" /><div className="relative overflow-hidden rounded-[2.25rem] border-8 border-white bg-[#392832] shadow-2xl shadow-[#392832]/20"><Image src="/images/shared%20image.jpg" alt="Operador entregando un paquete" width={736} height={736} priority className="aspect-square w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#392832]/90 via-[#392832]/25 to-transparent p-7 pt-20"><p className="font-display text-2xl font-bold text-[#FFF8EF]">Cada paquete cuenta.</p><p className="mt-1 text-sm text-[#FFF8EF]/80">Haz que cada decisión sea más simple.</p></div></div><div className="absolute -bottom-5 -left-4 rounded-2xl border border-white/80 bg-[#FFF8EF] px-4 py-3 shadow-xl sm:-left-8"><p className="text-[10px] font-bold uppercase tracking-wider text-[#80509A]">Estado de la operación</p><p className="mt-1 flex items-center gap-2 text-sm font-bold text-[#398A8C]"><span className="h-2 w-2 rounded-full bg-[#398A8C]" />Todo en marcha</p></div></div>
+      </section>
+      <section id="como-funciona" className="border-y border-[#873B52]/10 bg-white/55"><div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10"><div className="max-w-xl"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D66B4D]">Un flujo claro</p><h2 className="mt-3 font-display text-4xl font-bold text-[#873B52]">Todo lo que necesitas para enviar mejor.</h2></div><div className="mt-10 grid gap-5 md:grid-cols-3">{highlights.map((highlight, index) => <article key={highlight.title} className="group overflow-hidden rounded-3xl border border-[#873B52]/10 bg-[#FFF8EF] transition hover:-translate-y-1 hover:shadow-xl hover:shadow-[#873B52]/10"><div className="relative h-44 overflow-hidden"><Image src={highlight.image} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-[#FFF8EF] font-display font-bold text-[#873B52]">0{index + 1}</span></div><div className="p-5"><h3 className="font-display text-2xl font-bold text-[#80509A]">{highlight.title}</h3><p className="mt-2 text-sm leading-6 text-[#392832]/70">{highlight.text}</p></div></article>)}</div></div></section>
+      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10"><div className="relative overflow-hidden rounded-[2rem] bg-[#398A8C] px-7 py-12 text-[#FFF8EF] sm:px-12"><Image src="/images/shared%20image%20(2).jpg" alt="" fill className="object-cover opacity-15 mix-blend-multiply" /><div className="absolute -right-20 -top-28 h-72 w-72 rounded-full border-[28px] border-[#E6B94F]/35" /><div className="relative max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#E6B94F]">FastExpress para tu equipo</p><h2 className="mt-3 font-display text-4xl font-bold leading-tight sm:text-5xl">Menos pasos, mejores entregas.</h2><p className="mt-5 max-w-xl text-base leading-7 text-[#FFF8EF]/85">Ingresa a tu panel para crear cotizaciones y conservar el historial de cada envío.</p><Link href={panelHref} className="mt-8 inline-flex rounded-full bg-[#E6B94F] px-6 py-3.5 text-sm font-bold text-[#392832] transition hover:bg-[#f0cb6c]">{panelLabel}</Link></div></div></section>
+      <footer className="border-t border-[#873B52]/10 px-5 py-7 text-center text-xs text-[#392832]/60">FastExpress · Gestión de envíos para equipos que se mueven.</footer>
+    </main>
   );
 }
