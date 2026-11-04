@@ -1,69 +1,31 @@
 import Image from "next/image";
+import Link from "next/link";
+import { getSessionUser } from "@/src/lib/auth";
 
-export default function Home() {
+const highlights = [
+  { title: "Cotiza en segundos", text: "Calcula tarifas, descuentos y recargos sin salir del flujo de trabajo.", image: "/images/shared%20image.jpg" },
+  { title: "Controla cada envío", text: "Registra operaciones y consulta el historial de tu equipo en un solo lugar.", image: "/images/shared%20image%20(1).jpg" },
+  { title: "Decide con claridad", text: "Visualiza el resumen de cada cotización antes de confirmar el registro.", image: "/images/shared%20image%20(3).jpg" },
+];
+
+export default async function Home() {
+  const user = await getSessionUser();
+  const panelHref = user ? "/dashboard" : "/login";
+  const panelLabel = user ? "Ir al panel" : "Inicia sesión para ingresar";
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="min-h-screen overflow-hidden bg-[#FFF8EF] text-[#392832]">
+      <header className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 lg:px-10">
+        <Link href="/" className="flex items-center gap-3" aria-label="FastExpress, inicio"><span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#873B52] font-display text-xl font-bold text-[#FFF8EF] shadow-lg shadow-[#873B52]/20">F</span><span><span className="block font-display text-xl font-bold text-[#873B52]">FastExpress</span><span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#80509A]">En movimiento</span></span></Link>
+        <Link href={panelHref} className="rounded-full border border-[#873B52]/20 bg-white px-4 py-2 text-sm font-bold text-[#873B52] transition hover:border-[#873B52] hover:bg-[#873B52] hover:text-white">{user ? "Ir al panel" : "Iniciar sesión"}</Link>
+      </header>
+      <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 pb-20 pt-8 sm:px-8 lg:grid-cols-[1.02fr_.98fr] lg:px-10 lg:pb-28 lg:pt-16">
+        <div className="max-w-2xl"><p className="mb-5 inline-flex items-center gap-2 rounded-full bg-[#E6B94F]/20 px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] text-[#873B52]"><span className="h-2 w-2 rounded-full bg-[#D66B4D]" />Operaciones sin fricción</p><h1 className="font-display text-5xl font-bold leading-[.98] tracking-tight text-[#873B52] sm:text-6xl lg:text-7xl">Tu logística,<br /><span className="text-[#D66B4D]">en buen camino.</span></h1><p className="mt-7 max-w-xl text-lg leading-8 text-[#392832]/75">Cotiza, registra y consulta tus envíos con una herramienta clara para mantener cada operación en movimiento.</p><div className="mt-8 flex flex-wrap gap-3"><Link href={panelHref} className="rounded-full bg-[#873B52] px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-[#873B52]/20 transition hover:-translate-y-0.5 hover:bg-[#6f3044]">{panelLabel}</Link><a href="#como-funciona" className="rounded-full border border-[#398A8C]/30 px-6 py-3.5 text-sm font-bold text-[#398A8C] transition hover:bg-[#398A8C]/10">Conoce el proceso</a></div><div className="mt-10 flex items-center gap-6 text-sm"><div><p className="font-display text-2xl font-bold text-[#80509A]">1 lugar</p><p className="text-[#392832]/60">para operar</p></div><span className="h-9 w-px bg-[#873B52]/15" /><div><p className="font-display text-2xl font-bold text-[#80509A]">100%</p><p className="text-[#392832]/60">trazable</p></div></div></div>
+        <div className="relative mx-auto w-full max-w-xl lg:max-w-none"><div className="absolute -inset-5 rounded-[3rem] bg-[#E6B94F]/25 blur-2xl" /><div className="relative overflow-hidden rounded-[2.25rem] border-8 border-white bg-[#392832] shadow-2xl shadow-[#392832]/20"><Image src="/images/shared%20image.jpg" alt="Operador entregando un paquete" width={736} height={736} priority className="aspect-square w-full object-cover" /><div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#392832]/90 via-[#392832]/25 to-transparent p-7 pt-20"><p className="font-display text-2xl font-bold text-[#FFF8EF]">Cada paquete cuenta.</p><p className="mt-1 text-sm text-[#FFF8EF]/80">Haz que cada decisión sea más simple.</p></div></div><div className="absolute -bottom-5 -left-4 rounded-2xl border border-white/80 bg-[#FFF8EF] px-4 py-3 shadow-xl sm:-left-8"><p className="text-[10px] font-bold uppercase tracking-wider text-[#80509A]">Estado de la operación</p><p className="mt-1 flex items-center gap-2 text-sm font-bold text-[#398A8C]"><span className="h-2 w-2 rounded-full bg-[#398A8C]" />Todo en marcha</p></div></div>
+      </section>
+      <section id="como-funciona" className="border-y border-[#873B52]/10 bg-white/55"><div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10"><div className="max-w-xl"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D66B4D]">Un flujo claro</p><h2 className="mt-3 font-display text-4xl font-bold text-[#873B52]">Todo lo que necesitas para enviar mejor.</h2></div><div className="mt-10 grid gap-5 md:grid-cols-3">{highlights.map((highlight, index) => <article key={highlight.title} className="group overflow-hidden rounded-3xl border border-[#873B52]/10 bg-[#FFF8EF] transition hover:-translate-y-1 hover:shadow-xl hover:shadow-[#873B52]/10"><div className="relative h-44 overflow-hidden"><Image src={highlight.image} alt="" fill className="object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-[#FFF8EF] font-display font-bold text-[#873B52]">0{index + 1}</span></div><div className="p-5"><h3 className="font-display text-2xl font-bold text-[#80509A]">{highlight.title}</h3><p className="mt-2 text-sm leading-6 text-[#392832]/70">{highlight.text}</p></div></article>)}</div></div></section>
+      <section className="mx-auto max-w-7xl px-5 py-20 sm:px-8 lg:px-10"><div className="relative overflow-hidden rounded-[2rem] bg-[#398A8C] px-7 py-12 text-[#FFF8EF] sm:px-12"><Image src="/images/shared%20image%20(2).jpg" alt="" fill className="object-cover opacity-15 mix-blend-multiply" /><div className="absolute -right-20 -top-28 h-72 w-72 rounded-full border-[28px] border-[#E6B94F]/35" /><div className="relative max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#E6B94F]">FastExpress para tu equipo</p><h2 className="mt-3 font-display text-4xl font-bold leading-tight sm:text-5xl">Menos pasos, mejores entregas.</h2><p className="mt-5 max-w-xl text-base leading-7 text-[#FFF8EF]/85">Ingresa a tu panel para crear cotizaciones y conservar el historial de cada envío.</p><Link href={panelHref} className="mt-8 inline-flex rounded-full bg-[#E6B94F] px-6 py-3.5 text-sm font-bold text-[#392832] transition hover:bg-[#f0cb6c]">{panelLabel}</Link></div></div></section>
+      <footer className="border-t border-[#873B52]/10 px-5 py-7 text-center text-xs text-[#392832]/60">FastExpress · Gestión de envíos para equipos que se mueven.</footer>
+    </main>
   );
 }

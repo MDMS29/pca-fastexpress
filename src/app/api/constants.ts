@@ -4,6 +4,14 @@ export const CLIENT_TYPES = [
     { id: 3, label: 'VIP' },
 ]
 
+// Datos de referencia insertados por las migraciones de SQLite.
+export const DOCUMENT_TYPES = [
+    { id: 1, label: 'Cédula de ciudadanía' },
+    { id: 2, label: 'Cédula de extranjería' },
+    { id: 3, label: 'NIT' },
+    { id: 4, label: 'Pasaporte' },
+]
+
 export const SHIPPING_METHODS = [
     { id: 1, label: 'Estandar' },
     { id: 2, label: 'Express' }
@@ -19,5 +27,3 @@ export const SHIPPING_METHOD_SURCHARGE = [
     { id: 1, label: '0%', shipping_method_id: 1, value: 0 },
     { id: 2, label: '25%', shipping_method_id: 2, value: 0.25 }
 ]
-
-export const DataApp: any[] = []
